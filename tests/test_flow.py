@@ -93,7 +93,7 @@ async def test_full_booking_flow(env):
         callback_update(USER_ID, DayCB(code="haircut", day=f"{tomorrow:%Y%m%d}").pack()),
         callback_update(USER_ID, TimeCB(code="haircut", at=f"{slot:%Y%m%d%H%M}").pack()),
         message_update(USER_ID, "Иван"),
-        message_update(USER_ID, contact="+79001234567"),
+        message_update(USER_ID, contact="79001234567"),
         callback_update(USER_ID, ConfirmCB(ok=True).pack()),
     ):
         await dp.feed_raw_update(bot, update)
@@ -102,6 +102,7 @@ async def test_full_booking_flow(env):
     assert len(bookings) == 1
     assert bookings[0].starts_at == slot
     assert bookings[0].client_name == "Иван"
+    assert bookings[0].phone == "+79001234567"
     assert any("Новая запись" in t for t in bot.sent_to(ADMIN_ID))
 
 

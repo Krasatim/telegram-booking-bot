@@ -173,6 +173,8 @@ async def on_name(message: Message, state: FSMContext) -> None:
 @router.message(BookingForm.phone, F.contact | F.text)
 async def on_phone(message: Message, state: FSMContext) -> None:
     phone = message.contact.phone_number if message.contact else message.text.strip()
+    if message.contact and not phone.startswith("+"):
+        phone = "+" + phone  # Telegram присылает номер из контакта без «+»
     if not PHONE_RE.match(phone):
         await message.answer("Не похоже на номер телефона. Пример: +7 900 123-45-67")
         return
